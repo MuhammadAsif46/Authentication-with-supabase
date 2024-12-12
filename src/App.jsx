@@ -1,19 +1,33 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
-import './App.css'
-import { Route, Router } from 'react-router-dom'
-
+import "./App.css";
+import { Route, Routes } from "react-router-dom";
+import HomePage from "./pages/HomePage";
+import SignupPage from "./pages/SignupPage";
+import LoginPage from "./pages/LoginPage";
+import { useEffect } from "react";
+import { supabase } from "./supabase/supabase";
 function App() {
-  const [count, setCount] = useState(0)
+  useEffect(() => {
+    const checUser = async () => {
+      const { data: session } = await supabase.auth.getSession();
+
+      if (session) {
+        console.log("User is logged in:", session.user);
+        // Redirect or show home page
+      } else {
+        console.log("No user is logged in");
+        // Redirect to login/signup page
+      }
+    };
+    checUser();
+  }, []);
 
   return (
-    <Router>
-      <Route path='/' element={<Home />}></Route>
-      <Route path='/login' element={<Login/>}></Route>
-      <Route path='/signup' element={<Signup/>}></Route>
-    </Router>
-  )
+    <Routes>
+      <Route path="/" element={<HomePage />}></Route>
+      <Route path="/login" element={<LoginPage />}></Route>
+      <Route path="/signup" element={<SignupPage />}></Route>
+    </Routes>
+  );
 }
 
-export default App
+export default App;
